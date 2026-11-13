@@ -12,3 +12,7 @@ This folder contain a total of 10 files related to our simulation study followin
 
 ## Empirical Illustration:
 This folder contain both R scripts and LatentGOLD syntax:
+- R codes for the section of "PISA 2018 Data Management" in Empirical_PISA.R: clean the data downloaded from https://www.oecd.org/en/data/datasets/pisa-2018-database.html#data (Note that data is public and can be downloaded directly);
+- R codes for the section of "PISA 2018 Measurement Model" and "PISA 2018 factor score DF" in Empirical_PISA.R: estimate the measurement model and compute factor scores and their standard deviations;
+- The factor scores data frame is used as input to LatentGOLD and estimation of the structural model is conducted using Empirical_LatentGOLD.lgs;
+- R codes for the section of "PISA 2018 extra analysis for the results" and "PISA 2018 validation with posterior" in Empirical_PISA.R: analysis for model selections (to determine the number of clusters), validations for the final selected solution, and plots to reveal patterns of clusters at the country level. 
