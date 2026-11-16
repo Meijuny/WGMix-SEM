@@ -1,0 +1,49 @@
+//LG6.1//
+version = 6.1
+infile 'C:\Users\U0172378\OneDrive - KU Leuven\Desktop\Meijun - PhD\R\Preliminary_Simulation\FactorScoreDF\February simulation\FactorScoreDF_condition1_Rep5.csv' delim = comma quote = double
+
+
+model
+options
+   maxthreads=16;
+   algorithm 
+      tolerance=1e-08 emtolerance=0.01 emiterations=250 nriterations=100;
+   startvalues
+      seed=111 sets=50 tolerance=1e-05 iterations=250;
+   bayes
+      categorical=1 variances=1 latent=1 poisson=1;
+   montecarlo
+      seed=0 sets=0 replicates=500 tolerance=1e-08;
+   quadrature  nodes=10;
+   missing  includedependent;
+   output      
+      parameters=effect profile probmeans=posterior estimatedvalues=regression
+      predictionstatistics reorderclasses iterationdetails;
+variables
+   groupid group;
+   independent group nominal;
+   latent
+      GClass  group nominal 3, 
+      Class nominal 4,
+      F1 continuous posterior=(F1 F1_std) dif=group,
+      F2 continuous posterior=(F2 F2_std) dif=group,
+      F3 continuous posterior=(F3 F3_std) dif=group,
+      F4 continuous posterior=(F4 F4_std) dif=group,
+      F5 continuous posterior=(F5 F5_std) dif=group;
+equations
+   GClass <- 1;
+   Class <- 1 | GClass;
+   F5 <- F1 | Class + F2 | Class + F3 | Class + F4 | Class;
+   F1 | group;
+   F2 | group;
+   F3 | group;
+   F4 | group;
+   F1 <-> F2 | group;
+   F1 <-> F3 | group;
+   F1 <-> F4 | group;
+   F2 <-> F3 | group;
+   F2 <-> F4 | group;
+   F3 <-> F4 | group;
+   F5 | Class;
+
+end model
