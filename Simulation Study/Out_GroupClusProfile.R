@@ -8,7 +8,7 @@ Out_GroupClusProfile<-function(ConditionIdx, rep,
                                nclus_group, nclus_ind){
   
   ##read the results in
-  lg_lines<-readLines(paste0(getwd(),"/Simulation Study/LGResults/LGResults_c_", ConditionIdx, "_r_", rep, ".txt"),
+  lg_lines<-readLines(paste0(getwd(),"/Simulation Study/LGResults/AdditionalRep/LGResults_c_", ConditionIdx, "_r_", rep, ".txt"),
                       encoding = "latin1")
   
   GroupClus_Profile_start_idx<-grep("^ProbMeans", lg_lines)-nclus_ind

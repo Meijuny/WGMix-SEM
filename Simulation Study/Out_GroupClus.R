@@ -7,7 +7,7 @@ Out_GroupClus<-function(ConditionIdx, rep, ngroups,
                         nclus_group, reg_coeff, balance) {
   
   ##read the results in
-  lg_lines<-readLines(paste0(getwd(),"/Simulation Study/LGResults/LGResults_c_", ConditionIdx, "_r_", rep, ".txt"),
+  lg_lines<-readLines(paste0(getwd(),"/Simulation Study/LGResults/AdditionalRep/LGResults_c_", ConditionIdx, "_r_", rep, ".txt"),
                       encoding = "latin1")
   
   #find the starting line for the group clustering:
