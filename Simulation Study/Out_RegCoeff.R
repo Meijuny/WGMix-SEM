@@ -3,10 +3,12 @@ library(MASS)
 library(dplyr)
 library(combinat)
 
+##After taking the results back from the Windows Clusters of our research center
+
 Out_RegCoeff<-function(ConditionIdx, rep, nclus_group, nclus_ind, reg_coeff){
   
   ##read the results in
-  lg_lines<-readLines(paste0(getwd(),"/Simulation Study/LGResults/LGResults_c_", ConditionIdx, "_r_", rep, ".txt"),
+  lg_lines<-readLines(paste0(getwd(),"/Simulation Study/LGResults/AdditionalRep/LGResults_c_", ConditionIdx, "_r_", rep, ".txt"),
                       encoding = "latin1")
   
   #the starting index for the rows we want to extract (at the end, we can add 1 to skip the empty line)
