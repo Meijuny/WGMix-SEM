@@ -3,6 +3,8 @@ library(MASS)
 library(dplyr)
 library(combinat)
 
+##this is run on the Windows clusters in our research center
+
 RunLG_OutResult<-function(ConditionIdx, rep, nclus_group, nclus_ind){
   
   lg_syntax<-readLines(paste0(getwd(),"/Simulation Study/LGSyntax/template_lgs.lgs"))
