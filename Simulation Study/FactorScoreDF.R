@@ -151,9 +151,91 @@ FactorScoreDFGeneration<-function(data, ConditionIdx, Rep){
                   F1, F1_std, F2, F2_std, F3, F3_std, F4, F4_std, F5, F5_std)
   
   write.csv(FactorScoreDF, 
-            file = paste0("./Simulation Study/FactorScoreDF/FactorScoreDF_condition", ConditionIdx, "_Rep", Rep,".csv"),
+            file = paste0("./Simulation Study/FactorScoreDF/AdditionalRep/FactorScoreDF_condition", ConditionIdx, "_Rep", Rep,".csv"),
             row.names = F)
   
   invisible(NULL)
   
 }
+
+
+
+##################################################################################################
+################ Generate the Factor Score DF for the Windows Cluster to run Simulation ##########
+##################################################################################################
+
+##for Kristof
+#
+#First set up the simulation design
+design <- expand.grid(ngroups = c(24, 48),
+                      nclus_group = c(2, 3),
+                      balance = "balanced",
+                      nclus_ind = 4,
+                      N_g = c(100, 200, 400, 800),
+                      reg_coeff = c(0.3, 0.4),
+                      coeff_direct = "same",
+                      reliability = c("low", "high"),
+                      NonInvG = 0.75,
+                      NonInvSize = 0.4)
+design <- cbind(ConditionIdx = seq_len(nrow(design)), design)
+
+LastConditionIdx<-max(design$ConditionIdx)
+TotalRep<-50
+
+StartTime<-Sys.time()
+
+for(ConditionIdx in 49:64) {
+  
+  reg_coeff<-design[design$ConditionIdx==ConditionIdx,"reg_coeff"]
+  coeff_direct<-design[design$ConditionIdx==ConditionIdx,"coeff_direct"]
+  ngroups<-design[design$ConditionIdx==ConditionIdx,"ngroups"]
+  N_g<-design[design$ConditionIdx==ConditionIdx,"N_g"]
+  nclus_ind<-design[design$ConditionIdx==ConditionIdx,"nclus_ind"]
+  nclus_group<-design[design$ConditionIdx==ConditionIdx,"nclus_group"]
+  balance<-design[design$ConditionIdx==ConditionIdx,"balance"]
+  reliability<-design[design$ConditionIdx==ConditionIdx,"reliability"]
+  NonInvG<-design[design$ConditionIdx==ConditionIdx,"NonInvG"]
+  NonInvSize<-design[design$ConditionIdx==ConditionIdx,"NonInvSize"]
+  
+  model<-'
+  ##measurement model:
+  F1=~x1+x2+x3+x4+x5
+  F2=~z1+z2+z3+z4+z5
+  F3=~m1+m2+m3+m4+m5
+  F4=~v1+v2+v3+v4+v5
+  F5=~y1+y2+y3+y4+y5
+  
+  ##structural model:
+  F5~F1+F2+F3+F4
+  '
+  
+  for(r in 21:TotalRep){
+    
+    print(paste("Condition", ConditionIdx, "Replication", r, "out of", 50)) 
+    
+    set.seed(ConditionIdx*r)
+    
+    SimData<-DataGeneration(model=model, reg_coeff = reg_coeff, coeff_direct = coeff_direct,
+                            ngroups = ngroups, N_g = N_g, nclus_ind = nclus_ind, 
+                            nclus_group = nclus_group,
+                            balance = balance, 
+                            reliability = reliability, NonInvG = NonInvG, NonInvSize = NonInvSize)
+    
+    withCallingHandlers(
+      FactorScoreDFGeneration(data=SimData, 
+                              ConditionIdx=ConditionIdx, 
+                              Rep=r),
+      warning = function(w) {
+        if (grepl("negative", conditionMessage(w), ignore.case = TRUE)) {
+          message("warnings: ", conditionMessage(w))
+          invokeRestart("muffleWarning")
+        }
+      }
+    )
+  }
+  
+}
+
+
+EndTime<-Sys.time()
+StartTime-EndTime
