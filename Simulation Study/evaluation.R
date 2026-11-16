@@ -11,7 +11,7 @@ evaluation<-function(ConditionIdx, rep,
                      reg_coeff){
   
   ##check convergence:
-  lg_lines<-readLines(paste0(getwd(),"/Simulation Study/LGResults/LGResults_c_", ConditionIdx, "_r_", rep, ".txt"),
+  lg_lines<-readLines(paste0(getwd(),"/Simulation Study/LGResults/AdditionalRep/LGResults_c_", ConditionIdx, "_r_", rep, ".txt"),
                       encoding = "latin1")
   
   convergence<-!(any(grepl("WARNING: maximum number of iterations", lg_lines, fixed=T)))
