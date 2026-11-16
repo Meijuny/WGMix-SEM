@@ -1,0 +1,52 @@
+//LG6.1//
+version = 6.1
+infile 'C:\Users\U0172378\OneDrive - KU Leuven\Desktop\Meijun - PhD\R\Preliminary_Simulation\pisa2018_factorScoreDF_updated.csv' delim = comma quote = double
+
+
+model
+options
+   maxthreads=16;
+   algorithm 
+      tolerance=1e-08 emtolerance=0.01 emiterations=250 nriterations=100;
+   startvalues
+      seed=111 sets=50 tolerance=1e-05 iterations=250;
+   bayes
+      categorical=1 variances=1 latent=1 poisson=1;
+   montecarlo
+      seed=0 sets=0 replicates=500 tolerance=1e-08;
+   quadrature  nodes=10;
+   missing  includedependent;
+   output      
+      parameters=effect standarderrors profile probmeans=posterior estimatedvalues=regression
+      predictionstatistics reorderclasses iterationdetails;
+variables
+   groupid CNT;
+   independent CNT nominal;
+   latent
+      GClass  group nominal 2, 
+      Class nominal 3,
+      SenseOfBelong continuous posterior=(SenseOfBelong SenseOfBelong_std) dif=CNT,
+      TeacherSupport continuous posterior=(TeacherSupport TeacherSupport_std) dif=CNT,
+      Competitiveness continuous posterior=(Competitiveness Competitiveness_std) dif=CNT,
+      Cooperativeness continuous posterior=(Cooperativeness Cooperativeness_std) dif=CNT,
+      BullyExposure continuous posterior=(BullyExposure BullyExposure_std) dif=CNT;
+equations
+   GClass <- 1;
+// Estimate group-clusters based on the proportion of individual-clusters
+   Class <- 1 | GClass;
+// Estimate regression coefficients to be individual-cluster specific
+   SenseOfBelong <- TeacherSupport | Class + Competitiveness | Class + Cooperativeness | Class + BullyExposure | Class;
+// group-specific variance and covariance between the independent variables
+   TeacherSupport | CNT;
+   Competitiveness | CNT;
+   Cooperativeness | CNT;
+   BullyExposure | CNT;
+   TeacherSupport <-> Competitiveness | CNT;
+   TeacherSupport <-> Cooperativeness | CNT;
+   TeacherSupport <-> BullyExposure | CNT;
+   Competitiveness <-> Cooperativeness | CNT;
+   Competitiveness <-> BullyExposure | CNT;
+   Cooperativeness <-> BullyExposure | CNT;
+// Estimate the residual variance of the dependent variable to be individual-cluster specific
+   SenseOfBelong | Class;
+end model
